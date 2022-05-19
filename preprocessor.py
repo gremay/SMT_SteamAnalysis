@@ -2,6 +2,10 @@ import pandas as pd
 import os
 import matplotlib.pyplot as plt
 import re
+from datetime import date
+
+
+CURRENT_YEAR = date.today().year
 
 
 def filter_reviews_by_length(df_reviews_all):
@@ -60,6 +64,38 @@ def remove_newlines(review_text):
     return review_text.replace("\n", " ")
 
 
+def clean_review_date(review_date):
+    """Clean review_date column
+    """
+
+    # Remove 'Posted: ' prefix at the start of each date
+    review_date = review_date.replace("Posted: ", "")
+
+    review_date = review_date.strip()
+
+    # reviews from current year don't have year displayed explicitly, so we add that manually
+    has_year_pattern = re.compile("^[0-9a-zA-Z\s]*,\s?[0-9]{4}$")
+    if(not has_year_pattern.match(review_date)):
+        review_date = review_date + ", " + str(CURRENT_YEAR)
+
+    # make all dates have same format: there are entries where Month is before day, so swap them
+    month_before_day_pattern = re.compile("^[a-zA-Z]* [0-9][0-9]?, [0-9]{4}$")
+    if(month_before_day_pattern.match(review_date)):
+        split_year = review_date.split(", ")
+        split_month_day = split_year[0].split(" ")
+        split_year[0] = split_month_day[1] + " " + split_month_day[0]
+        review_date = ", ".join(split_year)
+
+    # make sure that day is zero-padded
+    split_date = review_date.split(" ")
+    day = split_date[0]
+    if(len(day) == 1):
+        split_date[0] = "0" + day
+    review_date = " ".join(split_date)
+
+    return review_date
+
+
 if __name__ == '__main__':
     file_path = 'reviews.csv'
     if os.path.isfile(file_path):
@@ -78,6 +114,9 @@ if __name__ == '__main__':
         remove_punctuation)  # remove punctuation
     df_reviews_all['review_text'] = df_reviews_all['review_text'].apply(
         remove_newlines)  # remove newlines
+    df_reviews_all['review_date'] = df_reviews_all['review_date'].apply(
+        clean_review_date)  # clean date
+
     # remove empty strings
     df_reviews_all = df_reviews_all[(df_reviews_all.review_text != "")]
 
