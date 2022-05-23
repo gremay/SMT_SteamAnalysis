@@ -1,0 +1,93 @@
+reviews 1k uniform:
+ For The Warp | Fetched reviews: 223
+ 166 positive reviews found
+ 57 negative reviews found
+ Append 114 reviews: For The Warp
+ ELDEN RING | Fetched reviews: 3600
+ 3336 positive reviews found
+ 264 negative reviews found
+ Append 528 reviews: ELDEN RING
+ Titanfall® 2 | Fetched reviews: 878
+ 796 positive reviews found
+ 82 negative reviews found
+ Append 164 reviews: Titanfall® 2
+ Red Dead Redemption 2 | Fetched reviews: 754
+ 691 positive reviews found
+ 63 negative reviews found
+ Append 126 reviews: Red Dead Redemption 2
+ Subnautica: Below Zero | Fetched reviews: 244
+ 214 positive reviews found
+ 30 negative reviews found
+ Append 60 reviews: Subnautica: Below Zero
+ We Were Here Forever | Fetched reviews: 512
+ 477 positive reviews found
+ 35 negative reviews found
+ Append 70 reviews: We Were Here Forever
+ Songs of Conquest | Fetched reviews: 255
+ 223 positive reviews found
+ 32 negative reviews found
+ Append 64 reviews: Songs of Conquest
+ Ultimate Epic Battle Simulator 2 | Fetched reviews: 266
+ 246 positive reviews found
+ 20 negative reviews found
+ Append 40 reviews: Ultimate Epic Battle Simulator 2
+ Rust | Fetched reviews: 1300
+ 1140 positive reviews found
+ 160 negative reviews found
+ Append 320 reviews: Rust
+ Counter-Strike: Global Offensive | Fetched reviews: 3119
+ 2776 positive reviews found
+ 343 negative reviews found
+ Append 686 reviews: Counter-Strike: Global Offensive
+
+reviews 1k & all
+For The Warp | Fetched reviews: 223
+ Append 223 reviews: For The Warp
+ 166 positive reviews found
+ 57 negative reviews found
+ Append 223 reviews (1k): For The Warp
+ ELDEN RING | Fetched reviews: 3610
+ Append 3610 reviews: ELDEN RING
+ 3345 positive reviews found
+ 265 negative reviews found
+ Append 765 reviews (1k): ELDEN RING
+ Titanfall® 2 | Fetched reviews: 879
+ Append 879 reviews: Titanfall® 2
+ 797 positive reviews found
+ 82 negative reviews found
+ Append 582 reviews (1k): Titanfall® 2
+ Red Dead Redemption 2 | Fetched reviews: 757
+ Append 757 reviews: Red Dead Redemption 2
+ 694 positive reviews found
+ 63 negative reviews found
+ Append 563 reviews (1k): Red Dead Redemption 2
+ Subnautica: Below Zero | Fetched reviews: 244
+ Append 244 reviews: Subnautica: Below Zero
+ 214 positive reviews found
+ 30 negative reviews found
+ Append 244 reviews (1k): Subnautica: Below Zero
+ We Were Here Forever | Fetched reviews: 512
+ Append 512 reviews: We Were Here Forever
+ 477 positive reviews found
+ 35 negative reviews found
+ Append 512 reviews (1k): We Were Here Forever
+ Songs of Conquest | Fetched reviews: 255
+ Append 255 reviews: Songs of Conquest
+ 223 positive reviews found
+ 32 negative reviews found
+ Append 255 reviews (1k): Songs of Conquest
+ Ultimate Epic Battle Simulator 2 | Fetched reviews: 267
+ Append 267 reviews: Ultimate Epic Battle Simulator 2
+ 247 positive reviews found
+ 20 negative reviews found
+ Append 267 reviews (1k): Ultimate Epic Battle Simulator 2
+ Rust | Fetched reviews: 1304
+ Append 1304 reviews: Rust
+ 1143 positive reviews found
+ 161 negative reviews found
+ Append 661 reviews (1k): Rust
+ Counter-Strike: Global Offensive | Fetched reviews: 3134
+ Append 3134 reviews: Counter-Strike: Global Offensive
+ 2789 positive reviews found
+ 345 negative reviews found
+ Append 845 reviews (1k): Counter-Strike: Global Offensive

@@ -6,7 +6,6 @@ import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 
-
 RED = '\033[31m'
 GREEN = '\033[32m'
 YELLOW = '\033[33m'
@@ -20,7 +19,7 @@ BROWSER_SLEEP = 5
 SCROLL_PAUSE_TIME = 0.5
 
 
-def install_proxy(PROXY_HOST = None, PROXY_PORT = None, TYPE = None):
+def install_proxy(PROXY_HOST=None, PROXY_PORT=None, TYPE=None):
     fp = webdriver.FirefoxProfile()
     if PROXY_HOST is not None:
         fp.set_preference("network.proxy.type", 1)
@@ -55,7 +54,8 @@ def scroll_to_end(driver, scroll_amount):
     # Get scroll height
     last_height = driver.execute_script("return document.body.scrollHeight")
     counter = 0
-    for i in range(scroll_amount):
+    scroll_counter = 0
+    while True:
         # Scroll down to bottom
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
@@ -72,6 +72,9 @@ def scroll_to_end(driver, scroll_amount):
         elif new_height != last_height:
             counter = 0
         last_height = new_height
+        if scroll_amount != -1 and scroll_counter == scroll_amount:
+            break
+        scroll_counter += 1
 
 
 def fetch_from(url):
@@ -98,9 +101,10 @@ def fetch_from(url):
         except:
             time.sleep(1)
 
-        scroll_to_end(browser, 25)
+        scroll_to_end(browser, -1)
         game_name = browser.find_element_by_class_name('apphub_AppName').text
-        print(GREEN, game_name, '| Fetched reviews:', len(browser.find_elements_by_class_name('apphub_UserReviewCardContent')), END)
+        print(GREEN, game_name, '| Fetched reviews:',
+              len(browser.find_elements_by_class_name('apphub_UserReviewCardContent')), END)
         for webelement in browser.find_elements_by_class_name('apphub_Card'):
             # helpful count
             found_helpful = 0
@@ -129,7 +133,7 @@ def fetch_from(url):
         # review text, hours played, recommended/not, helpful count, product count
         # content = browser.page_source
     except Exception as e:
-        print(RED, 'Error:', e.__traceback__, END)
+        print(RED, 'Error:', e.with_traceback(), END)
     finally:
         if browser is not None:
             browser.stop_client()
@@ -137,7 +141,7 @@ def fetch_from(url):
         try:
             del AT_EXIT_BROWSER[url]
         except Exception as e:
-            print(RED, 'Error:', e, END)
+            print(RED, 'Error:', e.with_traceback(), END)
 
     return df_reviews, game_name
 
@@ -151,12 +155,18 @@ def on_exit():
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print(TURQUOISE, 'Load reviews...', END)
-    file_path = 'reviews.csv'
+    file_path = 'reviews_1k.csv'
+    file_path_all = 'reviews_all.csv'
     if os.path.isfile(file_path):
         df_reviews_all = pd.read_csv(file_path, sep=';')
     else:
         df_reviews_all = pd.DataFrame(columns=['game_name', 'review_text', 'hours_played', 'rating', 'found_helpful',
-                                          'product_count', 'review_date'])
+                                               'product_count', 'review_date'])
+    if os.path.isfile(file_path_all):
+        df_reviews_all_ = pd.read_csv(file_path_all, sep=';')
+    else:
+        df_reviews_all_ = pd.DataFrame(columns=['game_name', 'review_text', 'hours_played', 'rating', 'found_helpful',
+                                               'product_count', 'review_date'])
 
     print(TURQUOISE, 'Starting crawler...', END)
     atexit.register(on_exit)
@@ -173,9 +183,18 @@ if __name__ == '__main__':
             'https://steamcommunity.com/app/730/reviews/']
     for url in urls:
         df_reviews_new, game_name = fetch_from(url)
-        print(TURQUOISE, 'Update reviews:', game_name, END)
-        df_reviews_all = df_reviews_all.append(df_reviews_new)
+        print(TURQUOISE, 'Append', len(df_reviews_new), 'reviews:', game_name, END)
+        df_reviews_all_ = df_reviews_all_.append(df_reviews_new)
+
+        df_reviews_positive = df_reviews_new[df_reviews_new['rating'] == 1]
+        df_reviews_negative = df_reviews_new[df_reviews_new['rating'] == 0]
+        print(YELLOW, len(df_reviews_positive), 'positive reviews found', END)
+        print(YELLOW, len(df_reviews_negative), 'negative reviews found', END)
+        sample_count_positive = min(500, len(df_reviews_positive))
+        sample_count_negative = min(500, len(df_reviews_negative))
+        df_reviews_all = df_reviews_all.append(pd.concat([df_reviews_positive.sample(n=sample_count_positive), df_reviews_negative.sample(n=sample_count_negative)]))
+        print(TURQUOISE, 'Append', sample_count_positive+sample_count_negative, 'reviews (1k):', game_name, END)
         time.sleep(60)
 
     df_reviews_all.to_csv(file_path, sep=';', index=False)
-
+    df_reviews_all_.to_csv(file_path_all, sep=';', index=False)
