@@ -7,6 +7,7 @@ import sys
 
 CURRENT_YEAR = date.today().year
 
+
 def remove_date_from_review(review):
     space_pattern = re.compile(r"\s")
     splitted = re.split(space_pattern, review, maxsplit=3)
@@ -16,12 +17,13 @@ def remove_date_from_review(review):
         removed_date = ""
     return removed_date
 
+
 def filter_reviews_by_length(df_reviews_all):
     """Remove reviews that are shorter than 3 chars and longer than mean + one standard deviation (~1000 chars)
     """
-    #df_reviews_all['review_text'] = df_reviews_all['review_text'].map(
+    # df_reviews_all['review_text'] = df_reviews_all['review_text'].map(
     #    lambda review: review[14:])  # remove date, which is at start of every review string (for now works for May only)
-    df_reviews_all['review_text']  = df_reviews_all['review_text'].map(
+    df_reviews_all['review_text'] = df_reviews_all['review_text'].map(
         lambda review: remove_date_from_review(review))
 
     df_reviews_all['review_length'] = df_reviews_all['review_text'].map(
@@ -74,6 +76,7 @@ def remove_newlines(review_text):
     """
     return review_text.replace("\n", " ")
 
+
 def remove_early_access(df_reviews_all):
     """Remove "EARLY ACCESS REVIEW" string from review text, add new column with boolean value for early access reviews
     """
@@ -83,13 +86,12 @@ def remove_early_access(df_reviews_all):
     for i, row in df_reviews_all.iterrows():
         review = row["review_text"]
         if pattern.search(review):
-            df_reviews_all.at[i,"review_text"] = re.sub(pattern,"",review)
-            df_reviews_all.at[i,"early_access"] = True
+            df_reviews_all.at[i, "review_text"] = re.sub(pattern, "", review)
+            df_reviews_all.at[i, "early_access"] = True
         else:
-            df_reviews_all.at[i,"early_access"] = False
+            df_reviews_all.at[i, "early_access"] = False
 
     return df_reviews_all
-
 
 
 def clean_review_date(review_date):
@@ -128,7 +130,7 @@ if __name__ == '__main__':
     if len(sys.argv) != 3 or "-h" in sys.argv or "--help" in sys.argv:
         print("\n------------------\nRun with 2 arguments: 1.file to process 2.output file name\nExample: python3 preprocessor.py input_file.csv output_file.csv\n-----------------\n")
         exit(1)
-    
+
     file_path = sys.argv[1]
     output_file = sys.argv[2]
     if os.path.isfile(file_path):
@@ -137,23 +139,41 @@ if __name__ == '__main__':
         print("File " + file_path + " doesn't exist in this directory\n")
         exit(1)
     print("Processing csv...\n")
+
+    # remove emojis
+    # df_reviews_all['review_text'] = df_reviews_all['review_text'].apply(
+    #    filter_emojis)
+
+    # remove non ascii reviews
     df_reviews_all['review_text'] = df_reviews_all['review_text'].apply(
-        filter_emojis)  # remove emojis
+        filter_non_ascii)
+
+    # remove punctuation
     df_reviews_all['review_text'] = df_reviews_all['review_text'].apply(
-        filter_non_ascii)  # remove non ascii reviews
-    df_reviews_all['review_text'] = df_reviews_all['review_text'].apply(
-        remove_punctuation)  # remove punctuation
-    df_reviews_all = remove_early_access(df_reviews_all)  # remove "early access review" review from text, add new column
+        remove_punctuation)
+
+    # remove "early access review" review from text, add new column
+    df_reviews_all = remove_early_access(df_reviews_all)
+
+    # remove too long reviews
     df_reviews_all = filter_reviews_by_length(
-        df_reviews_all)  # remove too long reviews
+        df_reviews_all)
+
+    # convert text to lowercase
+    df_reviews_all["review_text"] = df_reviews_all["review_text"].str.strip(
+    ).str.lower()
+
+    # remove newlines
     df_reviews_all['review_text'] = df_reviews_all['review_text'].apply(
-        remove_newlines)  # remove newlines
+        remove_newlines)
+
+    # clean date
     df_reviews_all['review_date'] = df_reviews_all['review_date'].apply(
-        clean_review_date)  # clean date
+        clean_review_date)
 
     # remove empty strings
     df_reviews_all = df_reviews_all[(df_reviews_all.review_text != "")]
 
     print("Creating new csv file " + output_file + "\n")
     df_reviews_all.to_csv(output_file, sep=';')
-    print(df_reviews_all )
+    print(df_reviews_all)
